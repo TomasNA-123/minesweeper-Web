@@ -1,0 +1,46 @@
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.cell-1 {
+  background-color: red;
+}
+
+.cell0 {
+  color: gray;
+}
+
+.cell1 {
+  color: blue;
+}
+
+.cell2 {
+  color: green;
+}
+
+.cell3 {
+  color: red;
+}
+
+.cell4 {
+  color: darkblue;
+}
+
+.cell5 {
+  color: brown;
+}
+
+.cell6 {
+  color: cadetblue;
+}
+
+.cell7 {
+  color: black;
+}
+
+.cell8 {
+  color: gray;
+}
