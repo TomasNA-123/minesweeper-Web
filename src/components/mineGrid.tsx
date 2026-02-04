@@ -18,30 +18,42 @@ function MineGrid() {
 
   let minesCords: number[][] = [];
 
-  const [minesList, setMinesList] = useState<number[][]>([]);
+  type cell = {
+    cords: number[];
+    value: number;
+    active: boolean;
+  };
+
+  const [minesList, setMinesList] = useState<cell[][]>([]);
   const [firstClick, setFirstClick] = useState(false);
 
   useEffect(() => {
     setMinesList(
-      Array.from({ length: rows }, () =>
-        Array.from({ length: columns }, () => 0),
+      Array.from({ length: rows }, (rowItem, rowIndex) =>
+        Array.from({ length: columns }, (colItem, colIndex) => ({
+          cords: [rowIndex, colIndex],
+          value: 0,
+          active: false,
+        })),
       ),
     );
   }, []);
 
-  let minesOnClick = () => {
-    let auxMinesList = Array.from({ length: rows }, () =>
-      Array.from({ length: columns }, () => 0),
-    );
+  let minesOnClick = (cellCords: number[]) => {
+    let auxMinesList = minesList.map((row) => row.map((cell) => ({ ...cell })));
     if (!firstClick) {
+      auxMinesList[cellCords[0]][cellCords[1]].active = true;
       while (minesCords.length < mines) {
         let cords = [randomInt(0, rows - 1), randomInt(0, columns - 1)];
-        if (!itsAMine(minesCords, cords)) {
+        if (
+          !itsAMine(minesCords, cords) &&
+          cellCords[0] != cords[0] &&
+          cellCords[1] != cords[1]
+        ) {
           minesCords.push(cords);
+          auxMinesList[cords[0]][cords[1]].value = -1;
         }
       }
-
-      minesCords.map((cord) => (auxMinesList[cord[0]][cord[1]] = -1));
 
       minesCords.map((cord) => {
         for (
@@ -54,15 +66,19 @@ function MineGrid() {
             j <= Math.min(cord[1] + 1, columns - 1);
             j++
           ) {
-            if (auxMinesList[i][j] != -1) {
-              auxMinesList[i][j] += 1;
+            console.log(auxMinesList[i][j].value);
+            if (auxMinesList[i][j].value !== -1) {
+              auxMinesList[i][j].value += 1;
             }
           }
         }
       });
       setMinesList(auxMinesList);
       setFirstClick(true);
+    } else {
+      auxMinesList[cellCords[0]][cellCords[1]].active = true;
     }
+    setMinesList(auxMinesList);
   };
 
   return (
@@ -71,9 +87,8 @@ function MineGrid() {
         rowItem.map((colItem, colIndex) => (
           <Cell
             key={`${rowIndex}-${colIndex}`}
-            firstClick={firstClick}
-            click={() => minesOnClick()}
-            value={colItem}
+            cellData={minesList[rowIndex][colIndex]}
+            click={minesOnClick}
           ></Cell>
         )),
       )}

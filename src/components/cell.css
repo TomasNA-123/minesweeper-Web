@@ -1,8 +1,18 @@
 .cell {
+  box-shadow:
+    inset 4px 4px 1px white,
+    inset -4px -4px 1px #888;
+}
+
+.cell-active {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: larger;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
   background-color: lightgray;
+  border: 2px solid #888;
 }
 
 .cell-1 {

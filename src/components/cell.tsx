@@ -1,27 +1,26 @@
 import { useState } from "react";
 import "./cell.css";
 
-interface Props {
+type cell = {
+  cords: number[];
   value: number;
-  firstClick: boolean;
-  click: () => void;
+  active: boolean;
+};
+
+interface Props {
+  cellData: cell;
+  click: (cords: number[]) => void;
 }
 
 function Cell(props: Props) {
-  const { value, firstClick, click } = props;
-  const [isActive, setIsActive] = useState(false);
+  const { cellData, click } = props;
+  // const [isActive, setIsActive] = useState(false);
   return (
     <div
-      className={`cell ${isActive ? "cell".concat(String(value)) : ""}`}
-      onClick={
-        !firstClick
-          ? click
-          : () => {
-              setIsActive(true);
-            }
-      }
+      className={`${cellData.active ? "cell-active cell".concat(String(cellData.value)) : "cell"}`}
+      onClick={() => click(cellData.cords)}
     >
-      {value}
+      {cellData.active ? cellData.value : ""}
     </div>
   );
 }
