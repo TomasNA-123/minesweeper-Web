@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./cell.css";
 
 type cell = {

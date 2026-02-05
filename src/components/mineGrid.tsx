@@ -39,10 +39,36 @@ function MineGrid() {
     );
   }, []);
 
+  const recursiveActiveCells = (cords: number[], minesGrid: cell[][]) => {
+    if (
+      minesGrid[cords[0]][cords[1]].value == 0 &&
+      minesGrid[cords[0]][cords[1]].active == false
+    ) {
+      for (
+        let i = Math.max(cords[0] - 1, 0);
+        i <= Math.min(cords[0] + 1, rows - 1);
+        i++
+      ) {
+        for (
+          let j = Math.max(cords[1] - 1, 0);
+          j <= Math.min(cords[1] + 1, columns - 1);
+          j++
+        ) {
+          minesGrid[cords[0]][cords[1]].active = true;
+          minesGrid = recursiveActiveCells([i, j], minesGrid);
+        }
+      }
+    }
+
+    minesGrid[cords[0]][cords[1]].active = true;
+
+    return minesGrid;
+  };
+
   let minesOnClick = (cellCords: number[]) => {
     let auxMinesList = minesList.map((row) => row.map((cell) => ({ ...cell })));
     if (!firstClick) {
-      auxMinesList[cellCords[0]][cellCords[1]].active = true;
+      // auxMinesList[cellCords[0]][cellCords[1]].active = true;
       while (minesCords.length < mines) {
         let cords = [randomInt(0, rows - 1), randomInt(0, columns - 1)];
         if (
@@ -66,7 +92,6 @@ function MineGrid() {
             j <= Math.min(cord[1] + 1, columns - 1);
             j++
           ) {
-            console.log(auxMinesList[i][j].value);
             if (auxMinesList[i][j].value !== -1) {
               auxMinesList[i][j].value += 1;
             }
@@ -75,9 +100,10 @@ function MineGrid() {
       });
       setMinesList(auxMinesList);
       setFirstClick(true);
-    } else {
-      auxMinesList[cellCords[0]][cellCords[1]].active = true;
     }
+
+    auxMinesList = recursiveActiveCells(cellCords, auxMinesList);
+
     setMinesList(auxMinesList);
   };
 
