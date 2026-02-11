@@ -1,0 +1,16 @@
+.mineButton {
+  height: 100%;
+  aspect-ratio: 1/1;
+  background-color: #c3c3c3;
+  border: none;
+  font-size: larger;
+  box-shadow:
+    inset 4px 4px 1px white,
+    inset -4px -4px 1px #888;
+  user-select: none;
+}
+
+.mineButton:hover {
+  background-color: #b3b3b3;
+  cursor: pointer;
+}

@@ -10,11 +10,16 @@ function itsAMine(mines: number[][], cords: number[]) {
   return mines.some(([a, b]) => a === cords[0] && b === cords[1]);
 }
 
-function MineGrid() {
+interface Props {
+  mines: number;
+  clickCell: (value: number, isActive: boolean) => void;
+}
+
+function MineGrid(props: Props) {
+  const { mines, clickCell } = props;
+
   let rows = 15;
   let columns = 15;
-
-  let mines = 20;
 
   let minesCords: number[][] = [];
 
@@ -107,6 +112,15 @@ function MineGrid() {
     setMinesList(auxMinesList);
   };
 
+  const cellClickFunctions = (
+    cords: number[],
+    cellValue: number,
+    isActive: boolean,
+  ) => {
+    minesOnClick(cords);
+    clickCell(cellValue, isActive);
+  };
+
   return (
     <div className="grid">
       {minesList.map((rowItem, rowIndex) =>
@@ -114,7 +128,7 @@ function MineGrid() {
           <Cell
             key={`${rowIndex}-${colIndex}`}
             cellData={minesList[rowIndex][colIndex]}
-            click={minesOnClick}
+            click={cellClickFunctions}
           ></Cell>
         )),
       )}

@@ -1,8 +1,8 @@
 import "./App.css";
-import MineGrid from "./components/mineGrid";
+import MainInterface from "./components/mainInterface";
 
 function App() {
-  return <MineGrid></MineGrid>;
+  return <MainInterface></MainInterface>;
 }
 
 export default App;

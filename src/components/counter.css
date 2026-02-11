@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "DSEG7";
+  src: url("/node_modules/dseg/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.counter {
+  font-family: "DSEG7", monospace;
+  font-size: 30px;
+  color: #ff2a2a;
+  background: black;
+  padding: 5px;
+  display: inline-block;
+  text-shadow:
+    0 0 5px #ff0000,
+    0 0 10px #ff0000,
+    0 0 20px #ff0000;
+  user-select: none;
+}
