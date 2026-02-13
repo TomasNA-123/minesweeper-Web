@@ -1,4 +1,7 @@
 .cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-shadow:
     inset 4px 4px 1px white,
     inset -4px -4px 1px #888;

@@ -6,12 +6,17 @@ import MineButton from "./mineButton";
 import { useState, useEffect } from "react";
 
 function MainInterface() {
-  let mines = 20;
+  const [mines, setMines] = useState(20);
+  const [rows, setRows] = useState(15);
+  const [columns, setColumns] = useState(15);
 
-  let [time, setTime] = useState(0);
+  const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
 
   const [buttonFace, setButtonFace] = useState("🙂");
+  const [resetSignal, setResetSignal] = useState(true);
+
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     if (!running) return;
@@ -42,6 +47,7 @@ function MainInterface() {
     } else {
       setButtonFace("😵");
       setRunning(false);
+      setGameOver(true);
     }
   };
 
@@ -49,6 +55,12 @@ function MainInterface() {
     setTime(0);
     setRunning(false);
     setButtonFace("🙂");
+    setResetSignal(true);
+    setGameOver(false);
+  };
+
+  const offResetSignal = () => {
+    setResetSignal(false);
   };
 
   return (
@@ -62,7 +74,15 @@ function MainInterface() {
         <Counter value={time}></Counter>
       </div>
 
-      <MineGrid mines={mines} clickCell={onClickCell}></MineGrid>
+      <MineGrid
+        mines={mines}
+        rows={rows}
+        columns={columns}
+        resetSignal={resetSignal}
+        gameOver={gameOver}
+        clickCell={onClickCell}
+        offResetSignal={offResetSignal}
+      ></MineGrid>
     </div>
   );
 }

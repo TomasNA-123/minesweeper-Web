@@ -12,14 +12,24 @@ function itsAMine(mines: number[][], cords: number[]) {
 
 interface Props {
   mines: number;
+  rows: number;
+  columns: number;
+  resetSignal: boolean;
+  gameOver: boolean;
   clickCell: (value: number, isActive: boolean) => void;
+  offResetSignal: () => void;
 }
 
 function MineGrid(props: Props) {
-  const { mines, clickCell } = props;
-
-  let rows = 15;
-  let columns = 15;
+  const {
+    mines,
+    rows,
+    columns,
+    resetSignal,
+    gameOver,
+    clickCell,
+    offResetSignal,
+  } = props;
 
   let minesCords: number[][] = [];
 
@@ -33,16 +43,21 @@ function MineGrid(props: Props) {
   const [firstClick, setFirstClick] = useState(false);
 
   useEffect(() => {
-    setMinesList(
-      Array.from({ length: rows }, (rowItem, rowIndex) =>
-        Array.from({ length: columns }, (colItem, colIndex) => ({
-          cords: [rowIndex, colIndex],
-          value: 0,
-          active: false,
-        })),
-      ),
-    );
-  }, []);
+    if (resetSignal) {
+      setMinesList(
+        Array.from({ length: rows }, (rowItem, rowIndex) =>
+          Array.from({ length: columns }, (colItem, colIndex) => ({
+            cords: [rowIndex, colIndex],
+            value: 0,
+            active: false,
+          })),
+        ),
+      );
+
+      setFirstClick(false);
+      offResetSignal();
+    }
+  }, [resetSignal]);
 
   const recursiveActiveCells = (cords: number[], minesGrid: cell[][]) => {
     if (
@@ -74,15 +89,19 @@ function MineGrid(props: Props) {
     let auxMinesList = minesList.map((row) => row.map((cell) => ({ ...cell })));
     if (!firstClick) {
       // auxMinesList[cellCords[0]][cellCords[1]].active = true;
-      while (minesCords.length < mines) {
+      let minesCreationTry = 0;
+      while (minesCords.length < mines && minesCreationTry <= 100) {
         let cords = [randomInt(0, rows - 1), randomInt(0, columns - 1)];
+        minesCreationTry += 1;
         if (
           !itsAMine(minesCords, cords) &&
-          cellCords[0] != cords[0] &&
-          cellCords[1] != cords[1]
+          Math.abs(cellCords[0] - cords[0]) > 1 &&
+          Math.abs(cellCords[1] - cords[1]) > 1
         ) {
           minesCords.push(cords);
           auxMinesList[cords[0]][cords[1]].value = -1;
+
+          minesCreationTry = 0;
         }
       }
 
@@ -117,8 +136,10 @@ function MineGrid(props: Props) {
     cellValue: number,
     isActive: boolean,
   ) => {
-    minesOnClick(cords);
-    clickCell(cellValue, isActive);
+    if (!gameOver) {
+      minesOnClick(cords);
+      clickCell(cellValue, isActive);
+    }
   };
 
   return (
@@ -128,6 +149,7 @@ function MineGrid(props: Props) {
           <Cell
             key={`${rowIndex}-${colIndex}`}
             cellData={minesList[rowIndex][colIndex]}
+            resetSignal={resetSignal}
             click={cellClickFunctions}
           ></Cell>
         )),
