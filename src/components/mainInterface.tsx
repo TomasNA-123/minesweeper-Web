@@ -18,6 +18,8 @@ function MainInterface() {
 
   const [gameOver, setGameOver] = useState(false);
 
+  const [flagsSet, setFlagsSet] = useState({});
+
   useEffect(() => {
     if (!running) return;
 
@@ -57,16 +59,38 @@ function MainInterface() {
     setButtonFace("🙂");
     setResetSignal(true);
     setGameOver(false);
+    setFlagsSet({});
   };
 
   const offResetSignal = () => {
     setResetSignal(false);
   };
 
+  const updateFlagsSet = (key: string, value: number) => {
+    let aux: Record<string, number> = { ...flagsSet };
+
+    aux[key] = value;
+    setFlagsSet(aux);
+  };
+
+  const updateAllFlags = (newFlags: Record<string, number>) => {
+    setFlagsSet(newFlags);
+  };
+
+  const getFlagsSet = () => {
+    return { ...flagsSet };
+  };
+
+  const minesRemining = (flags: Record<string, number>) => {
+    let flagsCount = Object.values(flags).filter((x) => x === 1).length;
+
+    return mines - flagsCount;
+  };
+
   return (
     <div className="mainInterface">
       <div className="topRow">
-        <Counter value={mines}></Counter>
+        <Counter value={minesRemining(flagsSet)}></Counter>
         <MineButton
           buttonData={buttonFace}
           click={() => resetAll()}
@@ -82,6 +106,9 @@ function MainInterface() {
         gameOver={gameOver}
         clickCell={onClickCell}
         offResetSignal={offResetSignal}
+        updateFlagsSet={updateFlagsSet}
+        getFlagsSet={getFlagsSet}
+        updateAllFlags={updateAllFlags}
       ></MineGrid>
     </div>
   );

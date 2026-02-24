@@ -11,10 +11,11 @@ interface Props {
   cellData: cell;
   resetSignal: boolean;
   click: (cords: number[], cellValue: number, isActive: boolean) => void;
+  updateFlagsSet: (key: string, value: number) => void;
 }
 
 function Cell(props: Props) {
-  const { cellData, resetSignal, click } = props;
+  const { cellData, resetSignal, click, updateFlagsSet } = props;
   const [cellStatus, setCellStatus] = useState(0);
 
   const cellIcons = ["", "🚩", "❓"];
@@ -26,19 +27,23 @@ function Cell(props: Props) {
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    cellStatus < 2 ? setCellStatus(cellStatus + 1) : setCellStatus(0);
+    if (!cellData.active) {
+      let cellStatusValue = cellStatus < 2 ? cellStatus + 1 : 0;
 
-    console.log(cellStatus);
+      setCellStatus(cellStatusValue);
+      updateFlagsSet(
+        `${cellData.cords[0]}-${cellData.cords[1]}`,
+        cellStatusValue,
+      );
+    }
   };
 
   const cellValue = (value: number) => {
     switch (value) {
       case -1:
         return "💣";
-        break;
       case 0:
         return "";
-        break;
       default:
         return value;
     }

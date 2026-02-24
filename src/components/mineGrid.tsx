@@ -18,6 +18,9 @@ interface Props {
   gameOver: boolean;
   clickCell: (value: number, isActive: boolean) => void;
   offResetSignal: () => void;
+  updateFlagsSet: (key: string, value: number) => void;
+  getFlagsSet: () => Record<string, number>;
+  updateAllFlags: (newFlags: Record<string, number>) => void;
 }
 
 function MineGrid(props: Props) {
@@ -29,6 +32,9 @@ function MineGrid(props: Props) {
     gameOver,
     clickCell,
     offResetSignal,
+    updateFlagsSet,
+    getFlagsSet,
+    updateAllFlags,
   } = props;
 
   let minesCords: number[][] = [];
@@ -59,7 +65,11 @@ function MineGrid(props: Props) {
     }
   }, [resetSignal]);
 
-  const recursiveActiveCells = (cords: number[], minesGrid: cell[][]) => {
+  const recursiveActiveCells = (
+    cords: number[],
+    minesGrid: cell[][],
+    flags: Record<string, number>,
+  ): [cell[][], Record<string, number>] => {
     if (
       minesGrid[cords[0]][cords[1]].value == 0 &&
       minesGrid[cords[0]][cords[1]].active == false
@@ -74,15 +84,16 @@ function MineGrid(props: Props) {
           j <= Math.min(cords[1] + 1, columns - 1);
           j++
         ) {
+          flags[`${i}-${j}`] = 0;
           minesGrid[cords[0]][cords[1]].active = true;
-          minesGrid = recursiveActiveCells([i, j], minesGrid);
+          [minesGrid, flags] = recursiveActiveCells([i, j], minesGrid, flags);
         }
       }
     }
 
     minesGrid[cords[0]][cords[1]].active = true;
 
-    return minesGrid;
+    return [minesGrid, flags];
   };
 
   let minesOnClick = (cellCords: number[]) => {
@@ -126,9 +137,15 @@ function MineGrid(props: Props) {
       setFirstClick(true);
     }
 
-    auxMinesList = recursiveActiveCells(cellCords, auxMinesList);
+    let auxFlags: Record<string, number>;
+    [auxMinesList, auxFlags] = recursiveActiveCells(
+      cellCords,
+      auxMinesList,
+      getFlagsSet(),
+    );
 
     setMinesList(auxMinesList);
+    updateAllFlags(auxFlags);
   };
 
   const cellClickFunctions = (
@@ -151,6 +168,7 @@ function MineGrid(props: Props) {
             cellData={minesList[rowIndex][colIndex]}
             resetSignal={resetSignal}
             click={cellClickFunctions}
+            updateFlagsSet={updateFlagsSet}
           ></Cell>
         )),
       )}
