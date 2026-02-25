@@ -1,0 +1,19 @@
+.secondaryContent {
+  width: 85%;
+  height: 100%;
+  background-color: #a4a4a4;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.titleRow {
+  margin-bottom: 20px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.titleRow h2 {
+  margin: 0;
+  font-size: 30px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

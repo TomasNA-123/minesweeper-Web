@@ -1,6 +1,25 @@
-.mainInterface {
+.mainGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* .mainInterface {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+} */
+
+.settingsSection,
+.scoreboardSection {
+  display: flex;
+  justify-content: center;
+}
+
+.minesweeperInterface {
   /* width: fit-content; */
   max-width: 450px;
+  margin: auto;
   padding: 15px;
   box-shadow:
     inset 4px 4px 1px white,
@@ -13,6 +32,13 @@
   padding: 8px;
   display: flex;
   justify-content: space-between;
+  box-shadow:
+    inset -4px -4px 1px white,
+    inset 4px 4px 1px #888;
+}
+
+.mineGridRow {
+  padding: 8px;
   box-shadow:
     inset -4px -4px 1px white,
     inset 4px 4px 1px #888;

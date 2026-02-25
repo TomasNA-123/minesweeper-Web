@@ -3,6 +3,8 @@ import "./mainInterface.css";
 import MineGrid from "./mineGrid";
 import Counter from "./counter";
 import MineButton from "./mineButton";
+import SideInterface from "./sideInterface";
+import SettingsForm from "./settingsForm";
 import { useState, useEffect } from "react";
 
 function MainInterface() {
@@ -88,28 +90,44 @@ function MainInterface() {
   };
 
   return (
-    <div className="mainInterface">
-      <div className="topRow">
-        <Counter value={minesRemining(flagsSet)}></Counter>
-        <MineButton
-          buttonData={buttonFace}
-          click={() => resetAll()}
-        ></MineButton>
-        <Counter value={time}></Counter>
+    <div className="mainGrid">
+      <div className="settingsSection">
+        <SideInterface title="Settings">
+          <SettingsForm rows={rows} cols={columns} mines={mines}></SettingsForm>
+        </SideInterface>
       </div>
 
-      <MineGrid
-        mines={mines}
-        rows={rows}
-        columns={columns}
-        resetSignal={resetSignal}
-        gameOver={gameOver}
-        clickCell={onClickCell}
-        offResetSignal={offResetSignal}
-        updateFlagsSet={updateFlagsSet}
-        getFlagsSet={getFlagsSet}
-        updateAllFlags={updateAllFlags}
-      ></MineGrid>
+      <div className="mainInterface">
+        <div className="minesweeperInterface">
+          <div className="topRow">
+            <Counter value={minesRemining(flagsSet)}></Counter>
+            <MineButton
+              buttonData={buttonFace}
+              click={() => resetAll()}
+            ></MineButton>
+            <Counter value={time}></Counter>
+          </div>
+
+          <div className="mineGridRow">
+            <MineGrid
+              mines={mines}
+              rows={rows}
+              columns={columns}
+              resetSignal={resetSignal}
+              gameOver={gameOver}
+              clickCell={onClickCell}
+              offResetSignal={offResetSignal}
+              updateFlagsSet={updateFlagsSet}
+              getFlagsSet={getFlagsSet}
+              updateAllFlags={updateAllFlags}
+            ></MineGrid>
+          </div>
+        </div>
+      </div>
+
+      <div className="scoreboardSection">
+        <SideInterface title="Scoreboard"></SideInterface>
+      </div>
     </div>
   );
 }
