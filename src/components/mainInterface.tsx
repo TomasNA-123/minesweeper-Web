@@ -11,6 +11,7 @@ function MainInterface() {
   const [mines, setMines] = useState(20);
   const [rows, setRows] = useState(15);
   const [columns, setColumns] = useState(15);
+  const [difficulty, setDifficulty] = useState("Medium");
 
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
@@ -93,7 +94,16 @@ function MainInterface() {
     <div className="mainGrid">
       <div className="settingsSection">
         <SideInterface title="Settings">
-          <SettingsForm rows={rows} cols={columns} mines={mines}></SettingsForm>
+          <SettingsForm
+            rows={rows}
+            cols={columns}
+            mines={mines}
+            difficulty={difficulty}
+            setRows={setRows}
+            setCols={setColumns}
+            setMines={setMines}
+            setDifficulty={setDifficulty}
+          ></SettingsForm>
         </SideInterface>
       </div>
 
