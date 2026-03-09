@@ -1,7 +1,39 @@
 .mainGrid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* grid-template-columns: repeat(3, 1fr); */
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+
+  grid-template-areas:
+    "game game"
+    "settings scoreboard";
+
+  gap: 10px;
+}
+
+@media (max-width: 990px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+
+    grid-template-areas:
+      "game"
+      "settings"
+      "scoreboard";
+  }
+}
+
+.settingsSection {
+  grid-area: settings;
+}
+
+.mainInterface {
+  grid-area: game;
+}
+
+.scoreboardSection {
+  grid-area: scoreboard;
 }
 
 /* .mainInterface {
@@ -17,8 +49,8 @@
 }
 
 .minesweeperInterface {
-  /* width: fit-content; */
-  max-width: 450px;
+  width: fit-content;
+  /* max-width: 450px; */
   margin: auto;
   padding: 15px;
   box-shadow:

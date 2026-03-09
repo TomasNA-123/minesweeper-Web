@@ -51,7 +51,13 @@ function Cell(props: Props) {
 
   return (
     <div
-      className={`${cellData.active ? "cell-active cell".concat(String(cellData.value)) : "cell"}`}
+      className={`${
+        cellData.active
+          ? "cell-active cell".concat(String(cellData.value))
+          : cellStatus != 0
+            ? "cell cell-icon"
+            : "cell"
+      }`}
       onClick={() => {
         if (cellStatus != 1)
           click(cellData.cords, cellData.value, cellData.active);

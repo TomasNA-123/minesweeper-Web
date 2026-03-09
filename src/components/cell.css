@@ -11,15 +11,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: larger;
+  /* font-size: larger; */
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
   background-color: lightgray;
   border: 2px solid #888;
 }
 
+.cell,
+.cell-active {
+  /* width: 20px;
+  height: 20px; */
+  min-width: 22px;
+  min-height: 22px;
+  aspect-ratio: 1/1;
+  box-sizing: border-box;
+}
+
 .cell-1 {
   background-color: red;
+}
+
+.cell-1,
+.cell-icon {
+  font-size: 12px;
 }
 
 .cell0 {

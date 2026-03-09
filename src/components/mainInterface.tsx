@@ -103,6 +103,7 @@ function MainInterface() {
             setCols={setColumns}
             setMines={setMines}
             setDifficulty={setDifficulty}
+            resetGame={resetAll}
           ></SettingsForm>
         </SideInterface>
       </div>

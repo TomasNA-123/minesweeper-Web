@@ -10,6 +10,7 @@ interface Props {
   setCols: (value: number) => void;
   setMines: (value: number) => void;
   setDifficulty: (value: string) => void;
+  resetGame: () => void;
 }
 
 function SettingsForm(props: Props) {
@@ -22,6 +23,7 @@ function SettingsForm(props: Props) {
     setCols,
     setMines,
     setDifficulty,
+    resetGame,
   } = props;
 
   const [localRows, setLocalRows] = useState(rows);
@@ -66,11 +68,19 @@ function SettingsForm(props: Props) {
         break;
 
       case "Hard":
-        setLocalRows(31);
+        setLocalRows(30);
         setLocalCols(16);
         setLocalMines(99);
         break;
     }
+  };
+
+  const acceptSettings = () => {
+    setRows(localRows);
+    setCols(localCols);
+    setMines(localMines);
+    setDifficulty(localDifficulty);
+    resetGame();
   };
 
   return (
@@ -153,7 +163,9 @@ function SettingsForm(props: Props) {
           </button>
         </div>
         <div className="formGroup">
-          <button className="btn btnAccept">Accept</button>
+          <button className="btn btnAccept" onClick={() => acceptSettings()}>
+            Accept
+          </button>
         </div>
       </div>
     </div>

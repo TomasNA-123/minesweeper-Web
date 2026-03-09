@@ -160,7 +160,13 @@ function MineGrid(props: Props) {
   };
 
   return (
-    <div className="grid">
+    <div
+      className="grid"
+      style={{
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+      }}
+    >
       {minesList.map((rowItem, rowIndex) =>
         rowItem.map((colItem, colIndex) => (
           <Cell
