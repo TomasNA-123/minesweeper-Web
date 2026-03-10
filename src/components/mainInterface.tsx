@@ -5,7 +5,18 @@ import Counter from "./counter";
 import MineButton from "./mineButton";
 import SideInterface from "./sideInterface";
 import SettingsForm from "./settingsForm";
+import Scoreboard from "./scoreboard";
 import { useState, useEffect } from "react";
+
+type gameResult = {
+  id: number;
+  name: string;
+  difficulty: string;
+  time: number;
+  mines: number;
+  cols: number;
+  rows: number;
+};
 
 function MainInterface() {
   const [mines, setMines] = useState(20);
@@ -20,8 +31,13 @@ function MainInterface() {
   const [resetSignal, setResetSignal] = useState(true);
 
   const [gameOver, setGameOver] = useState(false);
+  const [win, setWin] = useState(false);
 
   const [flagsSet, setFlagsSet] = useState({});
+  const [minesPlaced, setMinesPlaced] = useState(0);
+  const [cellsActive, setCellsActive] = useState(0);
+
+  const [gameResults, setGameResults] = useState<gameResult[]>([]);
 
   useEffect(() => {
     if (!running) return;
@@ -38,6 +54,55 @@ function MainInterface() {
 
     return () => clearInterval(timer);
   }, [running, time]);
+
+  useEffect(() => {
+    setMinesPlaced(mines);
+  }, [mines]);
+
+  const addGameResult = () => {
+    let auxGameResults = [...gameResults];
+
+    let latestId = 1;
+
+    if (auxGameResults.length > 0) {
+      const latestIdObjt = auxGameResults.reduce((max, obj) => {
+        return obj.id > max.id ? obj : max;
+      });
+
+      latestId = latestIdObjt.id;
+    }
+
+    setGameResults((prev) => [
+      ...prev,
+      {
+        id: latestId + 1,
+        name: "TNA",
+        difficulty: difficulty,
+        time: time,
+        mines: minesPlaced,
+        cols: columns,
+        rows: rows,
+      },
+    ]);
+  };
+
+  // Win condition
+  useEffect(() => {
+    const totalCells = rows * columns;
+
+    if (totalCells - minesPlaced <= cellsActive && !gameOver) {
+      setRunning(false);
+      setGameOver(true);
+      setWin(true);
+
+      // ________________
+      addGameResult();
+    }
+  }, [cellsActive, minesPlaced, rows, columns, gameOver]);
+
+  useEffect(() => {
+    if (win && buttonFace) setButtonFace("😎");
+  }, [win, buttonFace]);
 
   const onClickCell = (value: number, isActive: boolean) => {
     if (!running) setRunning(true);
@@ -63,6 +128,8 @@ function MainInterface() {
     setResetSignal(true);
     setGameOver(false);
     setFlagsSet({});
+    setCellsActive(0);
+    setWin(false);
   };
 
   const offResetSignal = () => {
@@ -87,7 +154,11 @@ function MainInterface() {
   const minesRemining = (flags: Record<string, number>) => {
     let flagsCount = Object.values(flags).filter((x) => x === 1).length;
 
-    return mines - flagsCount;
+    return minesPlaced - flagsCount;
+  };
+
+  const increaseCellsActive = (value: number) => {
+    setCellsActive((prev) => prev + value);
   };
 
   return (
@@ -131,13 +202,17 @@ function MainInterface() {
               updateFlagsSet={updateFlagsSet}
               getFlagsSet={getFlagsSet}
               updateAllFlags={updateAllFlags}
+              setMinesPlaced={setMinesPlaced}
+              increaseCellsActive={increaseCellsActive}
             ></MineGrid>
           </div>
         </div>
       </div>
 
       <div className="scoreboardSection">
-        <SideInterface title="Scoreboard"></SideInterface>
+        <SideInterface title="Scoreboard">
+          <Scoreboard gameResults={gameResults}></Scoreboard>
+        </SideInterface>
       </div>
     </div>
   );

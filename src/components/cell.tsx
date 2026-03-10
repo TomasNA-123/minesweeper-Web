@@ -10,12 +10,13 @@ type cell = {
 interface Props {
   cellData: cell;
   resetSignal: boolean;
+  gameOver: boolean;
   click: (cords: number[], cellValue: number, isActive: boolean) => void;
   updateFlagsSet: (key: string, value: number) => void;
 }
 
 function Cell(props: Props) {
-  const { cellData, resetSignal, click, updateFlagsSet } = props;
+  const { cellData, resetSignal, gameOver, click, updateFlagsSet } = props;
   const [cellStatus, setCellStatus] = useState(0);
 
   const cellIcons = ["", "🚩", "❓"];
@@ -27,7 +28,7 @@ function Cell(props: Props) {
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (!cellData.active) {
+    if (!cellData.active && !gameOver) {
       let cellStatusValue = cellStatus < 2 ? cellStatus + 1 : 0;
 
       setCellStatus(cellStatusValue);

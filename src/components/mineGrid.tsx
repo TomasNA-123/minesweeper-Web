@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Activity } from "react";
 import "./mineGrid.css";
 import Cell from "./cell";
 
@@ -21,6 +21,8 @@ interface Props {
   updateFlagsSet: (key: string, value: number) => void;
   getFlagsSet: () => Record<string, number>;
   updateAllFlags: (newFlags: Record<string, number>) => void;
+  setMinesPlaced: (value: number) => void;
+  increaseCellsActive: (value: number) => void;
 }
 
 function MineGrid(props: Props) {
@@ -35,6 +37,8 @@ function MineGrid(props: Props) {
     updateFlagsSet,
     getFlagsSet,
     updateAllFlags,
+    setMinesPlaced,
+    increaseCellsActive,
   } = props;
 
   let minesCords: number[][] = [];
@@ -69,7 +73,8 @@ function MineGrid(props: Props) {
     cords: number[],
     minesGrid: cell[][],
     flags: Record<string, number>,
-  ): [cell[][], Record<string, number>] => {
+    cActive: number,
+  ): [cell[][], Record<string, number>, number] => {
     if (
       minesGrid[cords[0]][cords[1]].value == 0 &&
       minesGrid[cords[0]][cords[1]].active == false
@@ -84,16 +89,27 @@ function MineGrid(props: Props) {
           j <= Math.min(cords[1] + 1, columns - 1);
           j++
         ) {
+          if (!minesGrid[cords[0]][cords[1]].active) {
+            cActive += 1;
+          }
           flags[`${i}-${j}`] = 0;
           minesGrid[cords[0]][cords[1]].active = true;
-          [minesGrid, flags] = recursiveActiveCells([i, j], minesGrid, flags);
+          [minesGrid, flags, cActive] = recursiveActiveCells(
+            [i, j],
+            minesGrid,
+            flags,
+            cActive,
+          );
         }
       }
     }
 
+    if (!minesGrid[cords[0]][cords[1]].active) {
+      cActive += 1;
+    }
     minesGrid[cords[0]][cords[1]].active = true;
 
-    return [minesGrid, flags];
+    return [minesGrid, flags, cActive];
   };
 
   let minesOnClick = (cellCords: number[]) => {
@@ -133,17 +149,21 @@ function MineGrid(props: Props) {
           }
         }
       });
+      setMinesPlaced(minesCords.length);
       setMinesList(auxMinesList);
       setFirstClick(true);
     }
 
     let auxFlags: Record<string, number>;
-    [auxMinesList, auxFlags] = recursiveActiveCells(
+    let auxCellsActive: number;
+    [auxMinesList, auxFlags, auxCellsActive] = recursiveActiveCells(
       cellCords,
       auxMinesList,
       getFlagsSet(),
+      0,
     );
 
+    increaseCellsActive(auxCellsActive);
     setMinesList(auxMinesList);
     updateAllFlags(auxFlags);
   };
@@ -173,6 +193,7 @@ function MineGrid(props: Props) {
             key={`${rowIndex}-${colIndex}`}
             cellData={minesList[rowIndex][colIndex]}
             resetSignal={resetSignal}
+            gameOver={gameOver}
             click={cellClickFunctions}
             updateFlagsSet={updateFlagsSet}
           ></Cell>
