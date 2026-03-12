@@ -23,6 +23,10 @@
       "settings"
       "scoreboard";
   }
+
+  .scoreboardSection {
+    margin-top: 15px;
+  }
 }
 
 .settingsSection {
@@ -31,6 +35,7 @@
 
 .mainInterface {
   grid-area: game;
+  overflow-x: scroll;
 }
 
 .scoreboardSection {
