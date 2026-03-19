@@ -14,16 +14,17 @@ type gameResult = {
 interface Props {
   gameResults: gameResult[];
   isReduced: boolean;
+  globalDifficulty: string;
 }
 
 function Scoreboard(props: Props) {
-  const { gameResults, isReduced } = props;
+  const { gameResults, isReduced, globalDifficulty } = props;
 
   const MAXBASE = 5;
   const [minRange, setMinRange] = useState(0);
   const [maxRange, setMaxRange] = useState(MAXBASE);
 
-  const [latestResult, setLatestResult] = useState<[number, gameResult]>([
+  const LATESTRESULTBASE: [number, gameResult] = [
     -1,
     {
       id: -1,
@@ -34,12 +35,16 @@ function Scoreboard(props: Props) {
       cols: 0,
       rows: 0,
     },
-  ]);
+  ];
+
+  const [latestResult, setLatestResult] =
+    useState<[number, gameResult]>(LATESTRESULTBASE);
 
   const [localGameResults, setLocalGameResults] =
     useState<gameResult[]>(gameResults);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [difficultyChoice, setDifficultyChoice] = useState("Medium");
 
   const updateScoreboard = () => {
     let localResults = [...gameResults];
@@ -53,6 +58,12 @@ function Scoreboard(props: Props) {
     let positionLatestResult = localResults.findIndex(
       (item) => item.id == auxLatestResult.id,
     );
+
+    if (difficultyChoice != "All") {
+      localResults = localResults.filter(
+        (obj) => obj.difficulty == difficultyChoice,
+      );
+    }
 
     setLatestResult([positionLatestResult, auxLatestResult]);
 
@@ -76,68 +87,107 @@ function Scoreboard(props: Props) {
 
   useEffect(() => {
     if (gameResults.length > 0) updateScoreboard();
-  }, [gameResults, minRange, maxRange]);
+  }, [difficultyChoice, gameResults, minRange, maxRange]);
 
   useEffect(() => {
     updateRange(currentPage);
   }, [currentPage]);
 
+  useEffect(() => {
+    setDifficultyChoice(globalDifficulty);
+  }, [globalDifficulty]);
+
   return (
     <div className="scoreboard">
-      <table className="sbTable">
-        <thead>
-          <tr>
-            <th>N°</th>
-            <th>Name</th>
-            <th>Difficulty</th>
-            <th>Time</th>
-            <th>Mines</th>
-            <th>Rows</th>
-            <th>Cols</th>
-          </tr>
-        </thead>
+      <div className="difficultyChoice">
+        <button
+          className={difficultyChoice == "Easy" ? "choiced" : ""}
+          onClick={() => setDifficultyChoice("Easy")}
+        >
+          Easy
+        </button>
+        <button
+          className={difficultyChoice == "Medium" ? "choiced" : ""}
+          onClick={() => setDifficultyChoice("Medium")}
+        >
+          Medium
+        </button>
+        <button
+          className={difficultyChoice == "Hard" ? "choiced" : ""}
+          onClick={() => setDifficultyChoice("Hard")}
+        >
+          Hard
+        </button>
+        <button
+          className={difficultyChoice == "Custom" ? "choiced" : ""}
+          onClick={() => setDifficultyChoice("Custom")}
+        >
+          Custom
+        </button>
+        <button
+          className={difficultyChoice == "All" ? "choiced" : ""}
+          onClick={() => setDifficultyChoice("All")}
+        >
+          All
+        </button>
+      </div>
 
-        <tbody>
-          {localGameResults.length === 0 && (
-            <tr key={`sbRow-${1}`}>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
+      <div className="sbTableContainer">
+        <table className="sbTable">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Name</th>
+              <th>Difficulty</th>
+              <th>Time</th>
+              <th>Mines</th>
+              <th>Rows</th>
+              <th>Cols</th>
             </tr>
-          )}
+          </thead>
 
-          {localGameResults.map((value, index) => (
-            <tr
-              key={`sbRow-${index}`}
-              className={value.id == latestResult[1].id ? "latestResult" : ""}
-            >
-              <td>{index + minRange + 1}</td>
-              <td>{value.name}</td>
-              <td>{value.difficulty}</td>
-              <td>{value.time}</td>
-              <td>{value.mines}</td>
-              <td>{value.rows}</td>
-              <td>{value.cols}</td>
-            </tr>
-          ))}
+          <tbody>
+            {localGameResults.length === 0 && (
+              <tr key={`sbRow-${1}`}>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            )}
 
-          {isReduced && latestResult[0] >= maxRange && (
-            <tr className="latestResult">
-              <td>{latestResult[0] + 1}</td>
-              <td>{latestResult[1].name}</td>
-              <td>{latestResult[1].difficulty}</td>
-              <td>{latestResult[1].time}</td>
-              <td>{latestResult[1].mines}</td>
-              <td>{latestResult[1].rows}</td>
-              <td>{latestResult[1].cols}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            {localGameResults.map((value, index) => (
+              <tr
+                key={`sbRow-${index}`}
+                className={value.id == latestResult[1].id ? "latestResult" : ""}
+              >
+                <td>{index + minRange + 1}</td>
+                <td>{value.name}</td>
+                <td>{value.difficulty}</td>
+                <td>{value.time}</td>
+                <td>{value.mines}</td>
+                <td>{value.rows}</td>
+                <td>{value.cols}</td>
+              </tr>
+            ))}
+
+            {isReduced && latestResult[0] >= maxRange && (
+              <tr className="latestResult">
+                <td>{latestResult[0] + 1}</td>
+                <td>{latestResult[1].name}</td>
+                <td>{latestResult[1].difficulty}</td>
+                <td>{latestResult[1].time}</td>
+                <td>{latestResult[1].mines}</td>
+                <td>{latestResult[1].rows}</td>
+                <td>{latestResult[1].cols}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {isReduced && gameResults.length > 0 && (
         <div className="paginationSB">

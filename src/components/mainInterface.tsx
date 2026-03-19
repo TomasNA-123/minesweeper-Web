@@ -211,7 +211,11 @@ function MainInterface() {
 
       <div className="scoreboardSection">
         <SideInterface title="Scoreboard">
-          <Scoreboard gameResults={gameResults} isReduced={true}></Scoreboard>
+          <Scoreboard
+            gameResults={gameResults}
+            isReduced={true}
+            globalDifficulty={difficulty}
+          ></Scoreboard>
         </SideInterface>
       </div>
     </div>

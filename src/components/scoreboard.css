@@ -5,7 +5,6 @@
   border-radius: 6px;
   background-color: #c3c3c3;
   box-sizing: border-box;
-  overflow-x: scroll;
 }
 
 .sbTable {
@@ -67,4 +66,36 @@
 
 .paginationSB .currentPage {
   background-color: #4d5258;
+}
+
+.difficultyChoice {
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.difficultyChoice button {
+  width: 100%;
+  height: 30px;
+  border-radius: 6px;
+  border: none;
+  background-color: #6c757d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.difficultyChoice button:hover {
+  background-color: #5c636a;
+}
+
+.difficultyChoice .choiced {
+  background-color: #4d5258;
+}
+
+@media (max-width: 990px) {
+  .sbTableContainer {
+    overflow-x: scroll;
+  }
 }
