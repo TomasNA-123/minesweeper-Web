@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "./scoreboard.css";
+import "./button";
+import Button from "./button";
 
 type gameResult = {
   id: number;
@@ -100,36 +102,36 @@ function Scoreboard(props: Props) {
   return (
     <div className="scoreboard">
       <div className="difficultyChoice">
-        <button
-          className={difficultyChoice == "Easy" ? "choiced" : ""}
-          onClick={() => setDifficultyChoice("Easy")}
-        >
-          Easy
-        </button>
-        <button
-          className={difficultyChoice == "Medium" ? "choiced" : ""}
-          onClick={() => setDifficultyChoice("Medium")}
-        >
-          Medium
-        </button>
-        <button
-          className={difficultyChoice == "Hard" ? "choiced" : ""}
-          onClick={() => setDifficultyChoice("Hard")}
-        >
-          Hard
-        </button>
-        <button
-          className={difficultyChoice == "Custom" ? "choiced" : ""}
-          onClick={() => setDifficultyChoice("Custom")}
-        >
-          Custom
-        </button>
-        <button
-          className={difficultyChoice == "All" ? "choiced" : ""}
-          onClick={() => setDifficultyChoice("All")}
-        >
-          All
-        </button>
+        <Button
+          typeButton="primary"
+          content="Easy"
+          click={() => setDifficultyChoice("Easy")}
+          choiced={difficultyChoice == "Easy"}
+        ></Button>
+        <Button
+          typeButton="primary"
+          content="Medium"
+          click={() => setDifficultyChoice("Medium")}
+          choiced={difficultyChoice == "Medium"}
+        ></Button>
+        <Button
+          typeButton="primary"
+          content="Hard"
+          click={() => setDifficultyChoice("Hard")}
+          choiced={difficultyChoice == "Hard"}
+        ></Button>
+        <Button
+          typeButton="primary"
+          content="Custom"
+          click={() => setDifficultyChoice("Custom")}
+          choiced={difficultyChoice == "Custom"}
+        ></Button>
+        <Button
+          typeButton="primary"
+          content="All"
+          click={() => setDifficultyChoice("All")}
+          choiced={difficultyChoice == "All"}
+        ></Button>
       </div>
 
       <div className="sbTableContainer">
@@ -191,33 +193,49 @@ function Scoreboard(props: Props) {
 
       {isReduced && gameResults.length > 0 && (
         <div className="paginationSB">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-          >
-            &lt;
-          </button>
+          <Button
+            typeButton="primary"
+            content="<"
+            className="paginationBtn"
+            click={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+          ></Button>
           {[...Array(Math.ceil(gameResults.length / MAXBASE))].map(
             (value, index) => (
-              <button
+              <Button
                 key={`btnPage${index + 1}`}
-                className={index + 1 == currentPage ? "currentPage" : ""}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
+                typeButton="primary"
+                content={String(index + 1)}
+                className="paginationBtn"
+                choiced={index + 1 == currentPage}
+                click={() => setCurrentPage(index + 1)}
+              ></Button>
             ),
           )}
-          <button
-            onClick={() =>
+          <Button
+            typeButton="primary"
+            content=">"
+            className="paginationBtn"
+            click={() =>
               setCurrentPage((prev) =>
                 Math.min(Math.ceil(gameResults.length / MAXBASE), prev + 1),
               )
             }
-          >
-            &gt;
-          </button>
+          ></Button>
         </div>
       )}
+
+      <div className="bottomButtons">
+        <Button
+          typeButton="primary"
+          content="Import Results"
+          click={() => console.log("import")}
+        ></Button>
+        <Button
+          typeButton="success"
+          content="Export Results"
+          click={() => console.log("export")}
+        ></Button>
+      </div>
     </div>
   );
 }

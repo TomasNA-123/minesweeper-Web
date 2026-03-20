@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./settingsForm.css";
+import Button from "./button";
 
 interface Props {
   rows: number;
@@ -157,16 +158,16 @@ function SettingsForm(props: Props) {
         </div>
       </div>
       <div className="rowTwoCols">
-        <div className="formGroup">
-          <button className="btn btnReset" onClick={() => resetSettings()}>
-            Reset
-          </button>
-        </div>
-        <div className="formGroup">
-          <button className="btn btnAccept" onClick={() => acceptSettings()}>
-            Accept
-          </button>
-        </div>
+        <Button
+          typeButton="primary"
+          content="Reset"
+          click={() => resetSettings()}
+        ></Button>
+        <Button
+          typeButton="success"
+          content="Accept"
+          click={() => acceptSettings()}
+        ></Button>
       </div>
     </div>
   );

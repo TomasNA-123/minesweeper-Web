@@ -48,26 +48,6 @@
   gap: 4px;
 }
 
-.paginationSB button {
-  /* padding: 6px; */
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid black;
-  background-color: #6c757d;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.paginationSB button:hover {
-  background-color: #5c636a;
-}
-
-.paginationSB .currentPage {
-  background-color: #4d5258;
-}
-
 .difficultyChoice {
   margin-bottom: 10px;
   display: grid;
@@ -75,27 +55,25 @@
   gap: 10px;
 }
 
-.difficultyChoice button {
-  width: 100%;
-  height: 30px;
-  border-radius: 6px;
-  border: none;
-  background-color: #6c757d;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.difficultyChoice button:hover {
-  background-color: #5c636a;
-}
-
-.difficultyChoice .choiced {
-  background-color: #4d5258;
+.bottomButtons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: right;
+  gap: 10px;
 }
 
 @media (max-width: 990px) {
   .sbTableContainer {
     overflow-x: scroll;
+  }
+}
+
+@media (max-width: 576px) {
+  .difficultyChoice {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bottomButtons {
+    flex-direction: column;
   }
 }

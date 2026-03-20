@@ -29,42 +29,12 @@
 
 .rowTwoCols {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   gap: 10px;
 }
 
-.btn {
-  width: 100%;
-  padding: 6px;
-  border-radius: 6px;
-  border: 0px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.btn:disabled {
-  opacity: 0.7;
-  cursor: auto;
-}
-
-.btn.btnAccept {
-  background-color: #198754;
-  color: white;
-}
-.btn.btnAccept:hover {
-  background-color: #157347;
-}
-.btn.btnAccept:disabled {
-  background-color: #198754;
-}
-
-.btn.btnReset {
-  background-color: #6c757d;
-  color: white;
-}
-.btn.btnReset:hover {
-  background-color: #5c636a;
-}
-.btn.btnReset:disabled {
-  background-color: #6c757d;
+@media (max-width: 576px) {
+  .rowTwoCols {
+    flex-direction: column;
+  }
 }

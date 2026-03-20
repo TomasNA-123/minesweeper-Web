@@ -1,0 +1,48 @@
+.btn {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 0px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn:disabled {
+  opacity: 0.7;
+  cursor: auto;
+}
+
+/* color class */
+.btn.primary {
+  background-color: #6c757d;
+  color: white;
+}
+.btn.primary:hover {
+  background-color: #5c636a;
+}
+.btn.primary:disabled {
+  background-color: #6c757d;
+}
+.btn.primary.choiced {
+  background-color: #4d5258;
+}
+
+.btn.success {
+  background-color: #198754;
+  color: white;
+}
+.btn.success:hover {
+  background-color: #157347;
+}
+.btn.success:disabled {
+  background-color: #198754;
+}
+.btn.success.choiced {
+  background-color: #13623d;
+}
+
+/* custom class */
+.btn.paginationBtn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+}
