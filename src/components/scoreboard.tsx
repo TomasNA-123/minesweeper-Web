@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./scoreboard.css";
 import "./button";
 import Button from "./button";
@@ -17,15 +17,17 @@ interface Props {
   gameResults: gameResult[];
   isReduced: boolean;
   globalDifficulty: string;
+  setGameResults: (value: gameResult[]) => void;
 }
 
 function Scoreboard(props: Props) {
-  const { gameResults, isReduced, globalDifficulty } = props;
+  const { gameResults, isReduced, globalDifficulty, setGameResults } = props;
 
   const MAXBASE = 5;
   const [minRange, setMinRange] = useState(0);
   const [maxRange, setMaxRange] = useState(MAXBASE);
 
+  // template of an empty game result
   const LATESTRESULTBASE: [number, gameResult] = [
     -1,
     {
@@ -48,7 +50,10 @@ function Scoreboard(props: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [difficultyChoice, setDifficultyChoice] = useState("Medium");
 
+  // update the SB content
   const updateScoreboard = () => {
+    if (gameResults.length == 0) return false;
+
     let localResults = [...gameResults];
 
     let auxLatestResult = localResults.reduce((last, obj) => {
@@ -79,16 +84,21 @@ function Scoreboard(props: Props) {
     setLocalGameResults(localResults);
   };
 
+  // update sb at startup
+  useEffect(() => {
+    updateScoreboard();
+  }, []);
+
+  // change the sb page
   const updateRange = (page: number) => {
     const newMaxRange = MAXBASE * page;
 
     setMinRange(Math.max(0, newMaxRange - MAXBASE));
-    // setMaxRange(Math.min(gameResults.length, newMaxRange));
     setMaxRange(newMaxRange);
   };
 
   useEffect(() => {
-    if (gameResults.length > 0) updateScoreboard();
+    updateScoreboard();
   }, [difficultyChoice, gameResults, minRange, maxRange]);
 
   useEffect(() => {
@@ -98,6 +108,47 @@ function Scoreboard(props: Props) {
   useEffect(() => {
     setDifficultyChoice(globalDifficulty);
   }, [globalDifficulty]);
+
+  // Export game results
+  const exportResults = () => {
+    const blob = new Blob([JSON.stringify(gameResults)], {
+      type: "text/plain",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "minesweeper_results.txt";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  // import game results
+  const importRef = useRef<HTMLInputElement | null>(null);
+
+  const handleClickImport = () => {
+    importRef.current?.click();
+  };
+
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const importedResults = event.target?.result as string;
+      try {
+        const importedResultsObj = JSON.parse(importedResults) as gameResult[];
+        setGameResults(importedResultsObj);
+      } catch {
+        alert("formato no valido");
+      }
+    };
+
+    reader.readAsText(file);
+  };
 
   return (
     <div className="scoreboard">
@@ -224,16 +275,23 @@ function Scoreboard(props: Props) {
         </div>
       )}
 
+      <input
+        type="file"
+        accept=".txt"
+        ref={importRef}
+        onChange={handleFileImport}
+        style={{ display: "none" }}
+      />
       <div className="bottomButtons">
         <Button
           typeButton="primary"
           content="Import Results"
-          click={() => console.log("import")}
+          click={handleClickImport}
         ></Button>
         <Button
           typeButton="success"
           content="Export Results"
-          click={() => console.log("export")}
+          click={() => exportResults()}
         ></Button>
       </div>
     </div>

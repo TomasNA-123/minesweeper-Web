@@ -37,8 +37,13 @@ function MainInterface() {
   const [minesPlaced, setMinesPlaced] = useState(0);
   const [cellsActive, setCellsActive] = useState(0);
 
-  const [gameResults, setGameResults] = useState<gameResult[]>([]);
+  // Load data form local storage at startap
+  const [gameResults, setGameResults] = useState<gameResult[]>(() => {
+    const lsData = localStorage.getItem("results");
+    return lsData ? JSON.parse(lsData) : ([] as gameResult[]);
+  });
 
+  // Game timer
   useEffect(() => {
     if (!running) return;
 
@@ -55,10 +60,12 @@ function MainInterface() {
     return () => clearInterval(timer);
   }, [running, time]);
 
+  // update mines count
   useEffect(() => {
     setMinesPlaced(mines);
   }, [mines]);
 
+  // add new game result
   const addGameResult = () => {
     let auxGameResults = [...gameResults];
 
@@ -86,6 +93,11 @@ function MainInterface() {
     ]);
   };
 
+  // Update results in local storage
+  useEffect(() => {
+    localStorage.setItem("results", JSON.stringify(gameResults));
+  }, [gameResults]);
+
   // Win condition
   useEffect(() => {
     const totalCells = rows * columns;
@@ -104,6 +116,7 @@ function MainInterface() {
     if (win && buttonFace) setButtonFace("😎");
   }, [win, buttonFace]);
 
+  // lose condition && change face on button
   const onClickCell = (value: number, isActive: boolean) => {
     if (!running) setRunning(true);
 
@@ -121,6 +134,7 @@ function MainInterface() {
     }
   };
 
+  // Reset game
   const resetAll = () => {
     setTime(0);
     setRunning(false);
@@ -136,6 +150,7 @@ function MainInterface() {
     setResetSignal(false);
   };
 
+  // update flags icons on cells
   const updateFlagsSet = (key: string, value: number) => {
     let aux: Record<string, number> = { ...flagsSet };
 
@@ -151,12 +166,14 @@ function MainInterface() {
     return { ...flagsSet };
   };
 
+  // upate mines remaining counter
   const minesRemining = (flags: Record<string, number>) => {
     let flagsCount = Object.values(flags).filter((x) => x === 1).length;
 
     return minesPlaced - flagsCount;
   };
 
+  // increast cells active counter
   const increaseCellsActive = (value: number) => {
     setCellsActive((prev) => prev + value);
   };
@@ -215,6 +232,7 @@ function MainInterface() {
             gameResults={gameResults}
             isReduced={true}
             globalDifficulty={difficulty}
+            setGameResults={setGameResults}
           ></Scoreboard>
         </SideInterface>
       </div>
