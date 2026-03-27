@@ -7,6 +7,8 @@ import SideInterface from "./sideInterface";
 import SettingsForm from "./settingsForm";
 import Scoreboard from "./scoreboard";
 import { useState, useEffect } from "react";
+import Modal from "./modal";
+import Button from "./button";
 
 type gameResult = {
   id: number;
@@ -37,6 +39,15 @@ function MainInterface() {
   const [minesPlaced, setMinesPlaced] = useState(0);
   const [cellsActive, setCellsActive] = useState(0);
 
+  // Modals status
+  const [winModal, setWinModal] = useState(false);
+  const [importModal, setImportModal] = useState(false);
+
+  const [importResultsOption, setImportResultsOption] = useState("");
+
+  // Win input nickname value
+  const [auxNickname, setAuxNickname] = useState("");
+
   // Load data form local storage at startap
   const [gameResults, setGameResults] = useState<gameResult[]>(() => {
     const lsData = localStorage.getItem("results");
@@ -65,8 +76,8 @@ function MainInterface() {
     setMinesPlaced(mines);
   }, [mines]);
 
-  // add new game result
-  const addGameResult = () => {
+  // Add new game result
+  const addGameResult = (nickname = "Unknown") => {
     let auxGameResults = [...gameResults];
 
     let latestId = 1;
@@ -83,7 +94,7 @@ function MainInterface() {
       ...prev,
       {
         id: latestId + 1,
-        name: "TNA",
+        name: nickname,
         difficulty: difficulty,
         time: time,
         mines: minesPlaced,
@@ -108,7 +119,10 @@ function MainInterface() {
       setWin(true);
 
       // ________________
-      addGameResult();
+      // addGameResult();
+      // Open win modal
+      setAuxNickname("");
+      setWinModal(true);
     }
   }, [cellsActive, minesPlaced, rows, columns, gameOver]);
 
@@ -232,10 +246,111 @@ function MainInterface() {
             gameResults={gameResults}
             isReduced={true}
             globalDifficulty={difficulty}
+            importOption={importResultsOption}
             setGameResults={setGameResults}
+            openImportModal={() => {
+              setImportModal(true);
+            }}
+            resetImportOption={() => setImportResultsOption("")}
           ></Scoreboard>
         </SideInterface>
       </div>
+
+      {/* Modals */}
+
+      {winModal && (
+        <Modal
+          title="¡You Win!"
+          active={winModal}
+          closeModal={() => {
+            addGameResult();
+            setWinModal(false);
+          }}
+        >
+          <p className="modalTextData">
+            Time: <span className="modalResultData">{time}</span>
+          </p>
+          <p className="modalTextData">
+            Difficulty:{" "}
+            <span className={`modalResultData ${difficulty}`}>
+              {difficulty}
+            </span>
+          </p>
+          <p>
+            Congratulations, you win the game write your nickname to set it on
+            the scoreboard
+          </p>
+          <div className="formGroup">
+            <label htmlFor="nicknameId" className="formLabel">
+              Nickname
+            </label>
+            <input
+              id="nicknameId"
+              className="formInput"
+              type="text"
+              value={auxNickname}
+              onChange={(e) => setAuxNickname(e.target.value)}
+            />
+          </div>
+          <div className="modalButtons">
+            <Button
+              typeButton="primary"
+              content="Close"
+              click={() => {
+                addGameResult();
+                setWinModal(false);
+              }}
+            ></Button>
+            <Button
+              typeButton="success"
+              content={"Accept"}
+              click={() => {
+                addGameResult(auxNickname);
+                setWinModal(false);
+              }}
+            ></Button>
+          </div>
+        </Modal>
+      )}
+
+      {importModal && (
+        <Modal
+          title="Import Results"
+          active={importModal}
+          closeModal={() => {
+            setImportResultsOption("");
+            setImportModal(false);
+          }}
+        >
+          <p>Existing data has been found. What would you like to do?</p>
+          <div className="modalButtons">
+            <Button
+              typeButton="primary"
+              content={"Cancel"}
+              click={() => {
+                setImportResultsOption("");
+                setImportModal(false);
+              }}
+            ></Button>
+            <Button
+              typeButton="success"
+              content={"Merge Results"}
+              click={() => {
+                setImportResultsOption("merge");
+                setImportModal(false);
+              }}
+            ></Button>
+            <Button
+              typeButton="danger"
+              content={"Replace Results"}
+              click={() => {
+                setImportResultsOption("replace");
+                setImportModal(false);
+              }}
+            ></Button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

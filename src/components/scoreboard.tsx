@@ -17,11 +17,22 @@ interface Props {
   gameResults: gameResult[];
   isReduced: boolean;
   globalDifficulty: string;
+  importOption: string;
   setGameResults: (value: gameResult[]) => void;
+  openImportModal: () => void;
+  resetImportOption: () => void;
 }
 
 function Scoreboard(props: Props) {
-  const { gameResults, isReduced, globalDifficulty, setGameResults } = props;
+  const {
+    gameResults,
+    isReduced,
+    globalDifficulty,
+    importOption,
+    setGameResults,
+    openImportModal,
+    resetImportOption,
+  } = props;
 
   const MAXBASE = 5;
   const [minRange, setMinRange] = useState(0);
@@ -50,21 +61,17 @@ function Scoreboard(props: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [difficultyChoice, setDifficultyChoice] = useState("Medium");
 
+  const [difficultyResults, setDifficultyResults] = useState(0);
+
+  const [importedData, setImpotedData] = useState([] as gameResult[]);
+
   // update the SB content
   const updateScoreboard = () => {
     if (gameResults.length == 0) return false;
 
     let localResults = [...gameResults];
 
-    let auxLatestResult = localResults.reduce((last, obj) => {
-      return obj.id > last.id ? obj : last;
-    });
-
     localResults.sort((a, b) => a.time - b.time);
-
-    let positionLatestResult = localResults.findIndex(
-      (item) => item.id == auxLatestResult.id,
-    );
 
     if (difficultyChoice != "All") {
       localResults = localResults.filter(
@@ -72,7 +79,17 @@ function Scoreboard(props: Props) {
       );
     }
 
-    setLatestResult([positionLatestResult, auxLatestResult]);
+    if (localResults.length != 0) {
+      let auxLatestResult = localResults.reduce((last, obj) => {
+        return obj.id > last.id ? obj : last;
+      });
+
+      let positionLatestResult = localResults.findIndex(
+        (item) => item.id == auxLatestResult.id,
+      );
+
+      setLatestResult([positionLatestResult, auxLatestResult]);
+    }
 
     if (isReduced && localResults.length > 0) {
       localResults = localResults.slice(
@@ -84,9 +101,23 @@ function Scoreboard(props: Props) {
     setLocalGameResults(localResults);
   };
 
+  // count the difficulty results
+  const countResults = () => {
+    let cResults = gameResults.length;
+
+    if (difficultyChoice != "All") {
+      cResults = gameResults.filter(
+        (item) => item.difficulty == difficultyChoice,
+      ).length;
+    }
+
+    setDifficultyResults(cResults);
+  };
+
   // update sb at startup
   useEffect(() => {
     updateScoreboard();
+    countResults();
   }, []);
 
   // change the sb page
@@ -99,6 +130,7 @@ function Scoreboard(props: Props) {
 
   useEffect(() => {
     updateScoreboard();
+    countResults();
   }, [difficultyChoice, gameResults, minRange, maxRange]);
 
   useEffect(() => {
@@ -108,6 +140,12 @@ function Scoreboard(props: Props) {
   useEffect(() => {
     setDifficultyChoice(globalDifficulty);
   }, [globalDifficulty]);
+
+  // reset the page to 1 on change the difficulty page
+  useEffect(() => {
+    setCurrentPage(1);
+    countResults();
+  }, [difficultyChoice]);
 
   // Export game results
   const exportResults = () => {
@@ -131,6 +169,7 @@ function Scoreboard(props: Props) {
     importRef.current?.click();
   };
 
+  // Read the document in the hidden input
   const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -141,7 +180,13 @@ function Scoreboard(props: Props) {
       const importedResults = event.target?.result as string;
       try {
         const importedResultsObj = JSON.parse(importedResults) as gameResult[];
-        setGameResults(importedResultsObj);
+
+        if (gameResults.length > 0) {
+          setImpotedData(importedResultsObj);
+          openImportModal();
+        } else {
+          setGameResults(importedResultsObj);
+        }
       } catch {
         alert("formato no valido");
       }
@@ -149,6 +194,30 @@ function Scoreboard(props: Props) {
 
     reader.readAsText(file);
   };
+
+  // Import the data when the option is selected
+  useEffect(() => {
+    if (importOption != "") {
+      let newResults = gameResults;
+
+      // Merge the new data with the current results
+      if (importOption == "merge") {
+        const newImportedDataID = importedData.map((item) => ({
+          ...item,
+          id: item.id + gameResults.length,
+        }));
+        newResults = [...gameResults, ...newImportedDataID] as gameResult[];
+      }
+
+      // Replace all the results
+      if (importOption == "replace") {
+        newResults = importedData;
+      }
+
+      resetImportOption();
+      setGameResults(newResults);
+    }
+  }, [importOption]);
 
   return (
     <div className="scoreboard">
@@ -227,22 +296,25 @@ function Scoreboard(props: Props) {
               </tr>
             ))}
 
-            {isReduced && latestResult[0] >= maxRange && (
-              <tr className="latestResult">
-                <td>{latestResult[0] + 1}</td>
-                <td>{latestResult[1].name}</td>
-                <td>{latestResult[1].difficulty}</td>
-                <td>{latestResult[1].time}</td>
-                <td>{latestResult[1].mines}</td>
-                <td>{latestResult[1].rows}</td>
-                <td>{latestResult[1].cols}</td>
-              </tr>
-            )}
+            {isReduced &&
+              latestResult[0] >= maxRange &&
+              (latestResult[1].difficulty == difficultyChoice ||
+                difficultyChoice == "All") && (
+                <tr className="latestResult">
+                  <td>{latestResult[0] + 1}</td>
+                  <td>{latestResult[1].name}</td>
+                  <td>{latestResult[1].difficulty}</td>
+                  <td>{latestResult[1].time}</td>
+                  <td>{latestResult[1].mines}</td>
+                  <td>{latestResult[1].rows}</td>
+                  <td>{latestResult[1].cols}</td>
+                </tr>
+              )}
           </tbody>
         </table>
       </div>
 
-      {isReduced && gameResults.length > 0 && (
+      {isReduced && difficultyResults > 0 && (
         <div className="paginationSB">
           <Button
             typeButton="primary"
@@ -250,7 +322,7 @@ function Scoreboard(props: Props) {
             className="paginationBtn"
             click={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
           ></Button>
-          {[...Array(Math.ceil(gameResults.length / MAXBASE))].map(
+          {[...Array(Math.ceil(difficultyResults / MAXBASE))].map(
             (value, index) => (
               <Button
                 key={`btnPage${index + 1}`}
@@ -268,7 +340,7 @@ function Scoreboard(props: Props) {
             className="paginationBtn"
             click={() =>
               setCurrentPage((prev) =>
-                Math.min(Math.ceil(gameResults.length / MAXBASE), prev + 1),
+                Math.min(Math.ceil(difficultyResults / MAXBASE), prev + 1),
               )
             }
           ></Button>

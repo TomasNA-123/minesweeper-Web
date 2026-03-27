@@ -40,6 +40,20 @@
   background-color: #13623d;
 }
 
+.btn.danger {
+  background-color: #dc3545;
+  color: white;
+}
+.btn.danger:hover {
+  background-color: #bb2d3b;
+}
+.btn.danger:disabled {
+  background-color: #dc3545;
+}
+.btn.danger.choiced {
+  background-color: #af2533;
+}
+
 /* custom class */
 .btn.paginationBtn {
   width: 30px;

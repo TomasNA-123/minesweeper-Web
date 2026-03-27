@@ -21,10 +21,12 @@ function Cell(props: Props) {
 
   const cellIcons = ["", "🚩", "❓"];
 
+  // Define the cell icon
   useEffect(() => {
     if (resetSignal) setCellStatus(0);
   });
 
+  // Change the cell status
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
@@ -39,6 +41,7 @@ function Cell(props: Props) {
     }
   };
 
+  // displays the cell value
   const cellValue = (value: number) => {
     switch (value) {
       case -1:

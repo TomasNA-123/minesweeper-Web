@@ -84,3 +84,58 @@
     inset -4px -4px 1px white,
     inset 4px 4px 1px #888;
 }
+
+/* Modals styles */
+.modalButtons {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.formLabel {
+  margin-right: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.formInput {
+  width: 90%;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.modalTextData {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.modalResultData {
+  font-size: larger;
+}
+.modalResultData.Easy {
+  color: #0d6efd;
+}
+.modalResultData.Medium {
+  color: #d3a10b;
+}
+.modalResultData.Hard {
+  color: #dc3545;
+}
+.modalResultData.Custom {
+  color: #6c757d;
+}
+
+@media (max-width: 576px) {
+  .modalButtons {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,49 @@
+.modalContainer {
+  min-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  background-color: #6a6a6aa6;
+}
+
+.modal {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 20px;
+  padding-bottom: 20px;
+  background-color: #a4a4a4;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.titleRow {
+  margin-bottom: 20px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.titleRow h2 {
+  margin: 0;
+  font-size: 30px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.inactive {
+  display: none !important;
+}
+
+.modalContent {
+  width: 95%;
+  margin: auto;
+  padding: 20px;
+  border-radius: 6px;
+  background-color: #c3c3c3;
+  box-sizing: border-box;
+}
+
+.modal.pt-20 {
+  padding-top: 20px;
+}
