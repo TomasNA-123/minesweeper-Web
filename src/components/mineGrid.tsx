@@ -16,6 +16,7 @@ interface Props {
   columns: number;
   resetSignal: boolean;
   gameOver: boolean;
+  win: boolean;
   clickCell: (value: number, isActive: boolean) => void;
   offResetSignal: () => void;
   updateFlagsSet: (key: string, value: number) => void;
@@ -32,6 +33,7 @@ function MineGrid(props: Props) {
     columns,
     resetSignal,
     gameOver,
+    win,
     clickCell,
     offResetSignal,
     updateFlagsSet,
@@ -52,6 +54,7 @@ function MineGrid(props: Props) {
   const [minesList, setMinesList] = useState<cell[][]>([]);
   const [firstClick, setFirstClick] = useState(false);
 
+  // Reset all cell values
   useEffect(() => {
     if (resetSignal) {
       setMinesList(
@@ -69,6 +72,7 @@ function MineGrid(props: Props) {
     }
   }, [resetSignal]);
 
+  // Active all the cells with value 0 around a selected cell
   const recursiveActiveCells = (
     cords: number[],
     minesGrid: cell[][],
@@ -112,8 +116,11 @@ function MineGrid(props: Props) {
     return [minesGrid, flags, cActive];
   };
 
+  // active a cell and assigns values ​​to the cells if is the first click
   let minesOnClick = (cellCords: number[]) => {
     let auxMinesList = minesList.map((row) => row.map((cell) => ({ ...cell })));
+
+    // Asign the values to all cells
     if (!firstClick) {
       // auxMinesList[cellCords[0]][cellCords[1]].active = true;
       let minesCreationTry = 0;
@@ -154,6 +161,7 @@ function MineGrid(props: Props) {
       setFirstClick(true);
     }
 
+    // Active the selected cell
     let auxFlags: Record<string, number>;
     let auxCellsActive: number;
     [auxMinesList, auxFlags, auxCellsActive] = recursiveActiveCells(
@@ -168,6 +176,7 @@ function MineGrid(props: Props) {
     updateAllFlags(auxFlags);
   };
 
+  // handles the click event in the cell
   const cellClickFunctions = (
     cords: number[],
     cellValue: number,
@@ -194,6 +203,7 @@ function MineGrid(props: Props) {
             cellData={minesList[rowIndex][colIndex]}
             resetSignal={resetSignal}
             gameOver={gameOver}
+            win={win}
             click={cellClickFunctions}
             updateFlagsSet={updateFlagsSet}
           ></Cell>

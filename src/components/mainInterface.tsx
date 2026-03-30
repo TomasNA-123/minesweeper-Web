@@ -228,6 +228,7 @@ function MainInterface() {
               columns={columns}
               resetSignal={resetSignal}
               gameOver={gameOver}
+              win={win}
               clickCell={onClickCell}
               offResetSignal={offResetSignal}
               updateFlagsSet={updateFlagsSet}

@@ -33,7 +33,8 @@
 }
 
 .cell-1,
-.cell-icon {
+.cell-icon,
+.mine-revealed {
   font-size: 12px;
 }
 
@@ -71,4 +72,28 @@
 
 .cell8 {
   color: gray;
+}
+
+.wrong-flag {
+  position: relative;
+}
+
+.wrong-flag::before,
+.wrong-flag::after {
+  width: 140%;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  left: -20%;
+  content: "";
+  background: black;
+  border-radius: 1px;
+}
+
+.wrong-flag::before {
+  transform: rotate(45deg);
+}
+
+.wrong-flag::after {
+  transform: rotate(-45deg);
 }

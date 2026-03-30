@@ -32,6 +32,7 @@ function SettingsForm(props: Props) {
   const [localMines, setLocalMines] = useState(mines);
   const [localDifficulty, setLocalDifficulty] = useState(difficulty);
 
+  // Set a min max value into the inputs
   const numericInputValues = (
     setInput: (value: number) => void,
     value: number,
@@ -45,6 +46,7 @@ function SettingsForm(props: Props) {
     setInput(value);
   };
 
+  // Change the settings to the current ones
   const resetSettings = () => {
     setLocalRows(rows);
     setLocalCols(cols);
@@ -52,6 +54,7 @@ function SettingsForm(props: Props) {
     onChangeDifficulty(difficulty);
   };
 
+  // change the settings depending on thedifficulty
   const onChangeDifficulty = (value: string) => {
     setLocalDifficulty(value);
 
@@ -76,6 +79,7 @@ function SettingsForm(props: Props) {
     }
   };
 
+  // change the settings values for the new ones
   const acceptSettings = () => {
     setRows(localRows);
     setCols(localCols);
